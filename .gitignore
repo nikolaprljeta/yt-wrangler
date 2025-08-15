@@ -1,0 +1,15 @@
+# Ignore log files
+download.log
+
+# Ignore backup files
+*.bak
+*.tmp
+*.swp
+
+# Ignore system files
+.DS_Store
+Thumbs.db
+
+# Ignore Python cache if using pip installs locally
+__pycache__/
+*.pyc
