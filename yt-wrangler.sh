@@ -27,6 +27,123 @@ show_urls_with_names() {
     done
 }
 
+interactive_url_selection() {
+    local urls=("$@")
+    local titles=()
+    local selected=()
+    local current=0
+    local total=${#urls[@]}
+    
+    # Fetch titles
+    echo "Fetching video titles..."
+    for url in "${urls[@]}"; do
+        title=$(yt-dlp --get-title "$url" 2>/dev/null)
+        titles+=("$title")
+        selected+=(1)  # All selected by default
+    done
+    
+    # Interactive selection loop
+    while true; do
+        # Clear screen and show header
+        clear
+        echo "=============================="
+        echo " Select Videos to Download"
+        echo "=============================="
+        echo "Use ↑/↓ to navigate, SPACE to toggle selection, ENTER to confirm, ESC/q to quit"
+        echo "Selected videos are marked with [x]"
+        echo ""
+        
+        # Display list
+        for i in "${!urls[@]}"; do
+            local marker=" "
+            local selection_marker=" "
+            
+            # Current item marker
+            if [ $i -eq $current ]; then
+                marker=">"
+            fi
+            
+            # Selection marker
+            if [ "${selected[$i]}" -eq 1 ]; then
+                selection_marker="x"
+            fi
+            
+            printf "%s [%s] %s\n" "$marker" "$selection_marker" "${titles[$i]}"
+        done
+        
+        echo ""
+        local selected_count=0
+        for sel in "${selected[@]}"; do
+            if [ "$sel" -eq 1 ]; then
+                ((selected_count++))
+            fi
+        done
+        echo "Selected: $selected_count/$total videos"
+        
+        # Read single key
+        read -rsn1 key
+        
+        case "$key" in
+            $'\033')  # Arrow keys start with escape sequence
+                read -rsn2 key
+                case "$key" in
+                    '[A')  # Up arrow
+                        if [ $current -gt 0 ]; then
+                            ((current--))
+                        fi
+                        ;;
+                    '[B')  # Down arrow
+                        if [ $current -lt $((total-1)) ]; then
+                            ((current++))
+                        fi
+                        ;;
+                esac
+                ;;
+            ' ')  # Spacebar - toggle selection
+                if [ "${selected[$current]}" -eq 1 ]; then
+                    selected[$current]=0
+                else
+                    selected[$current]=1
+                fi
+                ;;
+            'q'|$'\033')  # q or ESC - quit
+                echo "Selection cancelled."
+                exit 0
+                ;;
+            '')  # Enter - confirm selection
+                break
+                ;;
+        esac
+    done
+    
+    # Return selected URLs
+    local selected_urls=()
+    for i in "${!urls[@]}"; do
+        if [ "${selected[$i]}" -eq 1 ]; then
+            selected_urls+=("${urls[$i]}")
+        fi
+    done
+    
+    if [ ${#selected_urls[@]} -eq 0 ]; then
+        echo "No videos selected. Exiting."
+        exit 0
+    fi
+    
+    # Display final selection
+    clear
+    echo "Selected videos for download:"
+    for i in "${!urls[@]}"; do
+        if [ "${selected[$i]}" -eq 1 ]; then
+            echo "✓ ${titles[$i]}"
+        fi
+    done
+    echo ""
+    
+    # Return selected URLs via global variable
+    printf -v selected_urls_str '%s\n' "${selected_urls[@]}"
+    echo "$selected_urls_str"
+}
+
 check_dependency_mac() {
     local pkg="$1"
     local emoji="$2"
@@ -139,9 +256,15 @@ echo " YouTube Wrangler"
 echo "=============================="
 echo
 echo "Welcome! This tool extracts YouTube URLs from text or a file, fetches video titles,"
-echo "for confirmation, and downloads the videos safely to your Downloads folder."
+echo "and provides an interactive selection interface to choose which videos to download."
 echo
-echo "You can paste any text, use a file, or quit. The script will extract URLs, show titles, and ask for confirmation."
+echo "✨ NEW: Interactive video selection with keyboard navigation!"
+echo "   • Navigate with ↑/↓ arrow keys"
+echo "   • Toggle selections with SPACEBAR"
+echo "   • All videos pre-selected by default"
+echo
+echo "You can paste any text, use a file, or quit. The script will extract URLs and"
+echo "present them in an easy-to-use selection interface."
 echo
 echo "Options:"
 echo "1) Paste"
@@ -184,17 +307,13 @@ if [ ${#urls[@]} -eq 0 ]; then
     exit 1
 fi
 
-# --- Show URLs with titles ---
-show_urls_with_names "${urls[@]}"
-read -p "Do you want to download these videos? [y/N]: " confirm
-if [[ ! "$confirm" =~ ^[Yy]$ ]]; then
-    echo "Cancelled by user."
-    exit 0
-fi
+# --- Interactive URL selection ---
+selected_urls_output=$(interactive_url_selection "${urls[@]}")
+readarray -t selected_urls <<< "$selected_urls_output"
 
-# --- Save URLs ---
-printf "%s\n" "${urls[@]}" > "$URL_FILE"
-echo "✅ URLs saved to $URL_FILE"
+# --- Save selected URLs ---
+printf "%s\n" "${selected_urls[@]}" > "$URL_FILE"
+echo "✅ Selected URLs saved to $URL_FILE"
 
 # --- Download function ---
 download_url() {

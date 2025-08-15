@@ -62,8 +62,9 @@ git push origin feature/your-feature-name
 
 ### 🔧 Code Contributions
 - Bug fixes
-- New features
+- New features (like the interactive selection interface)
 - Performance improvements
+- UI/UX enhancements for the interactive features
 - Code refactoring
 - Documentation improvements
 
@@ -84,7 +85,9 @@ git push origin feature/your-feature-name
 ### Testing
 - Test your changes on multiple platforms when possible
 - Verify that existing functionality still works
+- Test interactive features (keyboard navigation, selection interface)
 - Test edge cases and error conditions
+- Verify terminal compatibility across different shells
 
 ### Dependencies
 - Minimize external dependencies

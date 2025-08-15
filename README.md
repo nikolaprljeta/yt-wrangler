@@ -1,9 +1,12 @@
 # 📺 YouTube Wrangler
 
-YouTube Wrangler is a fault-tolerant, interactive YouTube downloader that makes grabbing videos easy and safe.
+YouTube Wrangler is a fault-tolerant, interactive YouTube downloader with **advanced selection interface** that makes grabbing videos easy and safe.
 
 ## ⚡ Features
 
+- **🎯 Interactive Video Selection**: Navigate with arrow keys, toggle selections with spacebar
+- **✅ Smart Defaults**: All videos pre-selected, just uncheck what you don't want
+- **📋 Visual Selection Interface**: See titles, selection status, and current position at a glance
 - **Cross-platform**: macOS, Linux, Windows/WSL
 - **Automatic yt-dlp & ffmpeg install/update**
 - **Python 3 check** with interactive install
@@ -45,7 +48,24 @@ Choose an option:
 - **Use text from urls.txt** – Load any text file containing YouTube links mixed with other content
 - **Quit** – Exit the script
 
-After choosing an option, you will see a list of extracted URLs with video titles. Confirm which videos to download. Progress and errors are logged in `download.log`.
+After choosing an option, you'll enter the **Interactive Selection Interface**:
+
+### 🎮 Interactive Selection Controls
+
+- **↑/↓ Arrow Keys**: Navigate through the video list
+- **SPACEBAR**: Toggle selection for the current video
+- **ENTER**: Confirm selection and start downloading
+- **ESC/q**: Cancel and exit
+
+**Visual Indicators:**
+- `>` Current video position
+- `[x]` Selected videos (downloaded by default)
+- `[ ]` Unselected videos (will be skipped)
+- Counter shows `Selected: X/Y videos`
+
+Progress and errors are logged in `download.log`.
+
+📖 **[Read the Complete Interactive Selection Guide →](docs/interactive-selection-guide.md)**
 
 ## ⚙️ Configuration / Examples
 

@@ -7,10 +7,15 @@ This document explains the workflow and architecture of YouTube Wrangler.
 - Text is pasted by the user or read from `urls.txt`
 - URLs are extracted using a regular expression
 
-## 2. URL Confirmation
+## 2. Interactive Video Selection
 
 - The script fetches video titles via `yt-dlp --get-title`
-- User confirms which videos to download
+- **Interactive Selection Interface** presents videos in a navigable list
+- Users navigate with ↑/↓ arrow keys
+- Users toggle selections with SPACEBAR (all pre-selected by default)
+- Visual indicators show current position (`>`) and selection status (`[x]`/`[ ]`)
+- Real-time counter displays `Selected: X/Y videos`
+- Users confirm with ENTER or cancel with ESC/q
 
 ## 3. System Checks
 

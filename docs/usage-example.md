@@ -32,16 +32,43 @@ On launch, choose one of the following:
 2. **Use text from urls.txt** – load URLs from the file
 3. **Quit** – exit the script
 
-## 4. Confirm URLs
+## 4. Interactive Video Selection
 
-The script will extract URLs and fetch video titles for confirmation:
+The script will extract URLs and fetch video titles, then present the **Interactive Selection Interface**:
 
 ```
-- Rick Astley - Never Gonna Give You Up
-  https://youtu.be/dQw4w9WgXcQ?si=j7lDjynbQnziQi7t
+==============================
+ Select Videos to Download
+==============================
+Use ↑/↓ to navigate, SPACE to toggle selection, ENTER to confirm, ESC/q to quit
+Selected videos are marked with [x]
+
+> [x] Rick Astley - Never Gonna Give You Up
+  [x] Me at the zoo
+  [x] Charlie bit my finger - again !
+
+Selected: 3/3 videos
 ```
 
-Confirm to proceed.
+### Navigation Controls:
+- **↑/↓ Arrow Keys**: Move between videos
+- **SPACEBAR**: Toggle selection (uncheck videos you don't want)
+- **ENTER**: Confirm selection and start download
+- **ESC/q**: Cancel and exit
+
+### Visual Indicators:
+- `>` shows your current position
+- `[x]` means video is selected for download
+- `[ ]` means video will be skipped
+- All videos are selected by default
+
+After pressing ENTER, you'll see a final confirmation:
+
+```
+Selected videos for download:
+✓ Rick Astley - Never Gonna Give You Up
+✓ Me at the zoo
+```
 
 ## 5. Download
 
